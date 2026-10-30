@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Приглашение погулять 💌</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="floating-hearts" id="hearts"></div>
+
+    <main class="card">
+
+        <!-- ШАГ 1: приглашение -->
+        <div id="step1">
+            <div class="envelope-icon">💌</div>
+            <h1>У меня к тебе вопрос…</h1>
+            <p class="subtitle">Может, сходим погулять?</p>
+            <p class="description">
+    Хочется поболтать о всяком, погулять и просто хорошо провести время. Что скажешь?
+</p>
+            <div class="buttons">
+                <button class="btn btn-yes" id="btnYes">Да, с удовольствием! 🌸</button>
+            </div>
+        </div>
+
+        <!-- ШАГ 2: радость + форма -->
+        <div id="step2" class="hidden">
+            <div class="celebration">🎉</div>
+            <h1>Ура-ура!</h1>
+            <p class="subtitle">Тогда выбери, куда и когда пойдём</p>
+
+            <form id="planForm"
+                  action="https://formsubmit.co/artur.4vakyan@gmail.com"
+                  method="POST">
+
+                <!-- Скрытые настройки FormSubmit -->
+                <input type="hidden" name="_subject" value="💕 Ответ на приглашение погулять!">
+                <input type="hidden" name="_captcha" value="false">
+                <input type="hidden" name="_template" value="table">
+
+                <label class="field">
+                    <span>📍 Куда пойдём?</span>
+                    <input type="text" name="Место"
+                           placeholder="Например, парк Горького или уютное кафе"
+                           required>
+                </label>
+
+                <label class="field">
+                    <span>📅 Дата</span>
+                    <input type="date" name="Дата" required>
+                </label>
+
+                <label class="field">
+                    <span>🕐 Время</span>
+                    <input type="time" name="Время" required>
+                </label>
+
+                <button type="submit" class="btn btn-yes">Отправить 💌</button>
+            </form>
+
+            <div id="sentMsg" class="hidden sent-msg">
+                <span>💖</span>
+                <p>Спасибо! Я всё получил, скоро напишу.</p>
+            </div>
+        </div>
+
+    </main>
+<!-- Кнопка «Нет» живёт отдельно, поверх всей страницы -->
+<button class="btn btn-no" id="btnNo">Может, в другой раз</button>
+
+<script src="script.js"></script>
+</body>
+</html>

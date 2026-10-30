@@ -1,0 +1,224 @@
+/* ---------- Базовый сброс ---------- */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: linear-gradient(-45deg, #ffc3d8, #ffd4b8, #c3e8ff, #d4c3ff);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+    overflow: hidden;
+}
+
+@keyframes gradientShift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* ---------- Карточка ---------- */
+.card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 30px;
+    padding: 50px 40px;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(180, 100, 150, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    position: relative;
+    z-index: 10;
+    animation: cardAppear 1s ease-out;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+@keyframes cardAppear {
+    from { opacity: 0; transform: translateY(30px) scale(0.95); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ---------- Общие элементы ---------- */
+.envelope-icon {
+    font-size: 64px;
+    display: inline-block;
+    animation: bounce 2s ease-in-out infinite;
+    margin-bottom: 10px;
+}
+@keyframes bounce {
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50%      { transform: translateY(-10px) rotate(5deg); }
+}
+
+h1 { font-size: 28px; color: #4a3a52; margin-bottom: 8px; font-weight: 600; }
+.subtitle { font-size: 22px; color: #a05a85; margin-bottom: 25px; font-weight: 500; }
+.description { font-size: 16px; line-height: 1.6; color: #6a5a72; margin-bottom: 35px; }
+
+.hidden { display: none !important; }
+
+/* ---------- Кнопки ---------- */
+.buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+    min-height: 120px; /* чтобы «Да» не прыгала, когда «Нет» убежит */
+}
+
+.btn {
+    padding: 16px 30px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: inherit;
+}
+
+.btn-yes {
+    background: linear-gradient(135deg, #ff7eb3, #ff758c);
+    color: white;
+    box-shadow: 0 8px 20px rgba(255, 117, 140, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+.btn-yes::before {
+    content: '';
+    position: absolute; top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    transition: left 0.6s;
+}
+.btn-yes:hover::before { left: 100%; }
+.btn-yes:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 28px rgba(255, 117, 140, 0.55);
+}
+.btn-yes:active { transform: translateY(0) scale(0.98); }
+
+.btn-no {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    padding: 16px 30px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: inherit;
+    border: 2px solid #d5c8dc;
+    border-radius: 50px;
+    background: transparent;
+    color: #7a6a82;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                opacity 0.3s ease,
+                background 0.3s ease,
+                border-color 0.3s ease;
+}
+
+.btn-no.ready {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.btn-no:hover {
+    background: #f5eef8;
+    border-color: #c0b0ca;
+}
+/* ---------- Радость и форма ---------- */
+.celebration {
+    font-size: 64px;
+    display: inline-block;
+    animation: celebrateSpin 1s ease-out;
+    margin-bottom: 10px;
+}
+@keyframes celebrateSpin {
+    0%   { transform: scale(0) rotate(0deg); }
+    60%  { transform: scale(1.3) rotate(200deg); }
+    100% { transform: scale(1) rotate(360deg); }
+}
+
+.field {
+    display: block;
+    text-align: left;
+    margin-bottom: 18px;
+}
+.field span {
+    display: block;
+    font-size: 15px;
+    color: #6a5a72;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+.field input {
+    width: 100%;
+    padding: 14px 18px;
+    font-size: 16px;
+    font-family: inherit;
+    border: 2px solid #e5d8ec;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.7);
+    color: #4a3a52;
+    transition: all 0.25s ease;
+    outline: none;
+}
+.field input:focus {
+    border-color: #ff7eb3;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(255, 126, 179, 0.15);
+}
+
+form .btn-yes {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.sent-msg {
+    text-align: center;
+    animation: fadeIn 0.8s ease;
+}
+.sent-msg span { font-size: 48px; display: block; margin-bottom: 10px; }
+.sent-msg p { color: #6a5a72; font-size: 16px; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Сердечки ---------- */
+.floating-hearts {
+    position: fixed; inset: 0;
+    pointer-events: none; overflow: hidden; z-index: 1;
+}
+.heart {
+    position: absolute;
+    bottom: -40px;
+    animation: floatUp linear infinite;
+    opacity: 0.7;
+}
+@keyframes floatUp {
+    from { transform: translateY(0) rotate(0deg);       opacity: 0.7; }
+    to   { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+}
+
+/* ---------- Взрыв эмодзи ---------- */
+.burst {
+    position: fixed;
+    pointer-events: none;
+    z-index: 100;
+    animation: burstAnim 1.5s ease-out forwards;
+}
+@keyframes burstAnim {
+    0%   { transform: scale(0) translateY(0);   opacity: 1; }
+    70%  { transform: scale(1.4) translateY(-80px); opacity: 1; }
+    100% { transform: scale(1) translateY(-120px); opacity: 0; }
+}
