@@ -123,6 +123,10 @@ h1 { font-size: 28px; color: #4a3a52; margin-bottom: 8px; font-weight: 600; }
                 opacity 0.3s ease,
                 background 0.3s ease,
                 border-color 0.3s ease;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 
 .btn-no.ready {
