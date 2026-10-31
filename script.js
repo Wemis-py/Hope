@@ -20,7 +20,72 @@ const btnNo  = document.getElementById('btnNo');
 const btnYes = document.getElementById('btnYes');
 const card   = document.querySelector('.card');
 
-btnNo.addEventListener('click', (e) => e.preventDefault());
+// Тексты, которые будут меняться при кликах/наведениях
+const noTexts = [
+    'Может, в другой раз',
+    'Ты уверена? 🤔',
+    'Правда?',
+    'Подумай ещё раз 😊',
+    'Я подожду…',
+    'Ну хотя бы на 5 минут!',
+    'Не поймаешь! 😜'
+];
+let noClicks = 0;
+
+// Универсальная функция перемещения (работает и для мыши, и для пальца)
+function moveButton(event) {
+    // Предотвращаем стандартное поведение (например, скролл или клик)
+    if (event && event.cancelable) event.preventDefault();
+
+    // Меняем текст на кнопке
+    if (noClicks < noTexts.length) {
+        btnNo.textContent = noTexts[noClicks];
+        noClicks++;
+    }
+
+    const pad  = 20; // Отступ от краев экрана
+    const btnW = btnNo.offsetWidth;
+    const btnH = btnNo.offsetHeight;
+
+    // Границы видимой области экрана
+    const minLeft = pad;
+    const maxLeft = window.innerWidth  - pad - btnW;
+    const minTop  = pad;
+    const maxTop  = window.innerHeight - pad - btnH;
+
+    if (maxLeft <= minLeft || maxTop <= minTop) return;
+
+    // Определяем координаты курсора или пальца
+    let clientX = window.innerWidth / 2;
+    let clientY = window.innerHeight / 2;
+
+    if (event) {
+        if (event.touches && event.touches.length > 0) {
+            clientX = event.touches[0].clientX;
+            clientY = event.touches[0].clientY;
+        } else if (event.clientX !== undefined) {
+            clientX = event.clientX;
+            clientY = event.clientY;
+        }
+    }
+
+    // Ищем точку подальше от пальца/курсора
+    let targetX, targetY, tries = 0;
+    do {
+        targetX = minLeft + Math.random() * (maxLeft - minLeft);
+        targetY = minTop  + Math.random() * (maxTop  - minTop);
+        tries++;
+    } while (
+        tries < 30 &&
+        Math.hypot(
+            targetX + btnW / 2 - clientX,
+            targetY + btnH / 2 - clientY
+        ) < 150 // Безопасное расстояние, чтобы кнопка не спряталась под палец
+    );
+
+    // Двигаем кнопку через transform (это плавно благодаря CSS)
+    btnNo.style.transform = `translate(${targetX}px, ${targetY}px)`;
+}
 
 // Ставим кнопку под «Да» после появления карточки
 let placed = false;
@@ -34,48 +99,34 @@ function placeInitially() {
 
     btnNo.style.transition = 'none';
     btnNo.style.transform  = `translate(${x}px, ${y}px)`;
-    void btnNo.offsetWidth;      // фиксируем позицию без анимации
+    void btnNo.offsetWidth; // Фиксируем позицию без анимации
     btnNo.style.transition = '';
 
     btnNo.classList.add('ready');
 }
 
-// Ловим только собственную анимацию карточки (не детей)
+// Ждем появления карточки
 card.addEventListener('animationend', (e) => {
     if (e.target === card) placeInitially();
 });
 // Страховка
 setTimeout(placeInitially, 1200);
 
-function escapeFromCursor(event) {
-    const pad  = 25;
-    const btnW = btnNo.offsetWidth;
-    const btnH = btnNo.offsetHeight;
+// Пересчитываем позицию, если пользователь повернул экран
+window.addEventListener('resize', () => {
+    if (noClicks === 0) {
+        placed = false;
+        placeInitially();
+    }
+});
 
-    const minLeft = pad;
-    const maxLeft = window.innerWidth  - pad - btnW;
-    const minTop  = pad;
-    const maxTop  = window.innerHeight - pad - btnH;
-
-    if (maxLeft <= minLeft || maxTop <= minTop) return;
-
-    let targetX, targetY, tries = 0;
-    do {
-        targetX = minLeft + Math.random() * (maxLeft - minLeft);
-        targetY = minTop  + Math.random() * (maxTop  - minTop);
-        tries++;
-    } while (
-        tries < 30 &&
-        Math.hypot(
-            targetX + btnW / 2 - event.clientX,
-            targetY + btnH / 2 - event.clientY
-        ) < 180
-    );
-
-    btnNo.style.transform = `translate(${targetX}px, ${targetY}px)`;
-}
-
-btnNo.addEventListener('mouseover', escapeFromCursor);
+// --- Слушатели событий для кнопки «Нет» ---
+// 1. Для компьютеров (наведение мыши)
+btnNo.addEventListener('mouseover', moveButton);
+// 2. Для телефонов (касание пальцем)
+btnNo.addEventListener('touchstart', moveButton, { passive: false });
+// 3. Страховка от случайных кликов
+btnNo.addEventListener('click', (e) => e.preventDefault());
 
 
 // ---------- Кнопка «Да» ----------
@@ -85,7 +136,7 @@ const step2 = document.getElementById('step2');
 btnYes.addEventListener('click', () => {
     celebrate();
 
-    // Плавно прячем убегающую кнопку
+    // Плавно скрываем убегающую кнопку
     btnNo.classList.remove('ready');
     setTimeout(() => { btnNo.style.display = 'none'; }, 300);
 
@@ -101,6 +152,7 @@ btnYes.addEventListener('click', () => {
     }, 400);
 });
 
+// Функция салюта из эмодзи
 function celebrate() {
     const emojis = ['🎉', '💖', '🌸', '✨', '🎊', '💕', '🎈'];
     for (let i = 0; i < 30; i++) {
@@ -122,29 +174,31 @@ function celebrate() {
 const planForm = document.getElementById('planForm');
 const sentMsg  = document.getElementById('sentMsg');
 
-planForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
+if (planForm) {
+    planForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-    const submitBtn = planForm.querySelector('button[type="submit"]');
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Отправляю…';
+        const submitBtn = planForm.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Отправляю…';
 
-    try {
-        const res = await fetch(planForm.action, {
-            method: 'POST',
-            body: new FormData(planForm),
-            headers: { 'Accept': 'application/json' }
-        });
+        try {
+            const res = await fetch(planForm.action, {
+                method: 'POST',
+                body: new FormData(planForm),
+                headers: { 'Accept': 'application/json' }
+            });
 
-        if (res.ok) {
-            planForm.classList.add('hidden');
-            sentMsg.classList.remove('hidden');
-        } else {
-            throw new Error('Ошибка отправки');
+            if (res.ok) {
+                planForm.classList.add('hidden');
+                sentMsg.classList.remove('hidden');
+            } else {
+                throw new Error('Ошибка отправки');
+            }
+        } catch (err) {
+            alert('Не получилось отправить :( Попробуй ещё раз.');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Отправить 💌';
         }
-    } catch (err) {
-        alert('Не получилось отправить :( Попробуй ещё раз.');
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Отправить 💌';
-    }
-});
+    });
+}
